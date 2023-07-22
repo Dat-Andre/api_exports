@@ -1,10 +1,17 @@
-import {getSortedHeightsList, getFileNameByType, isFileDecompressed, decompressFile} from './helpers'
+import {getSortedHeightsList, decompressFile, getDataJSONAtHeight} from './helpers'
 import { Request, Response, NextFunction } from "express";
 
 // TODO: Prob move to main server.ts file then import here
 const compressedRootPath = process.env.COMPRESSED_ROOT_PATH ?? "./export_assets_compressed/";
 const decompressedRootPath = process.env.DECOMPRESSED_ROOT_PATH ?? "./export_assets_uncompressed/";
 const COMPRESSED_EXTENSION = ".tar.xz";
+
+// pairs the type -> the main key and object key in the data to filter by.
+const typeToKeys: any = {
+    "bank": ["balances", "address"],
+    "staking": ["delegations", "delegator_address"],    
+    "auth": ["accounts", "address"],
+}
 
 const avaliableHeights = (
     req: Request,
@@ -30,41 +37,76 @@ const latestHeight = (
     });
 }
 
-import path from 'path'
-import fs from 'fs'
-
 const getDataAtHeight = (
     req: Request,
     res: Response,
     next: NextFunction
-): Response => {
-    // if height is not set, it is latest
-    const height = (req.params.height ?? getSortedHeightsList(compressedRootPath)[0]).toString();
+): Response => {        
+    let height = req.params.height.toString();
+    if (height === "latest") {
+        height = getSortedHeightsList(compressedRootPath)[0].toString();
+    }
 
     // decompresses file if it is not already
     decompressFile(compressedRootPath, COMPRESSED_EXTENSION, height, decompressedRootPath);
 
-    // return the json of the type (ex: bank)
+    // ex: bank, auth, staking. TODO: Validate func instead of doing in getDataJSONAtHeight
     const type = req.params.type;
     
-    // TODO: convert to helper
-    const filePath = path.join(decompressedRootPath, height, `${height}_${type}.json`);
+    // TODO: REDIS/memory cache on top of this?
+    const data = getDataJSONAtHeight(height, type, decompressedRootPath);
 
-    // if filePath exist, read it into json
-    if (fs.existsSync(filePath)) {
-        const data = fs.readFileSync(filePath, 'utf8');
-
-        // convert data to json object
-        const json = JSON.parse(data);
-        return res.status(200).json({
-            json,
+    // if data has an error value
+    if (data.error) {
+        return res.status(400).json({
+            error: data.error,
         });
-    } 
+    }
+    
+    return res.status(200).json({
+        data,
+    });
+}
 
-    // if filePath does not exist, return error 
-    return res.status(404).json({
-        message: "File not found: " + filePath,
-    });    
+const getUserAtHeight = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Response => {
+    // get a height, type, and address.
+    let height = req.params.height.toString();
+    if (height === "latest") {
+        height = getSortedHeightsList(compressedRootPath)[0].toString();
+    }
+
+    const type = req.params.type;
+    const address = req.params.address;
+
+    // decompresses file if it is not already
+    // TODO: Move this to getDataJSONAtheight instead?
+    decompressFile(compressedRootPath, COMPRESSED_EXTENSION, height, decompressedRootPath);
+
+    // get data from file
+    const data = getDataJSONAtHeight(height, type, decompressedRootPath);    
+
+    const parentKey: string = typeToKeys[type][0];
+    const findKey: string = typeToKeys[type][1];    
+
+    // find all instances in the data as an array
+    const instances = data[parentKey].filter((obj: any) => obj[findKey] === address);
+
+    if (instances === undefined) {
+        return res.status(400).json({
+            error: "Wallet data not found.",
+        });
+    }
+
+    // TODO: Add height
+    return res.status(200).json({
+        height: height,
+        request: type,
+        instances,
+    });
 }
 
 // TODO: remove this. Just for testing.
@@ -89,4 +131,5 @@ export default {
     latestHeight,
     decompressTest,
     getDataAtHeight,
+    getUserAtHeight,
   };

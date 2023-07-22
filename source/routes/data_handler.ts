@@ -18,25 +18,17 @@ router.get(
   controller.decompressTest
 );
 
-router.get(
-  "/latest/:type",
-  controller.getDataAtHeight
-);
+// /:height can also be /latest
 router.get(
   "/:height/:type",
   controller.getDataAtHeight
 );
 
-// router.get(
-//   "/latest/:type/:address",
-//   controller.getLatestHeightDecompressedJsonDataByTypeAndAddress
-// );
-// router.get("/:height/:type", controller.getDecompressedJsonDataByHeightAndType);
-// router.get(
-//   "/:height/:type/:address",
-//   controller.getDecompressedJsonDataByHeightTypeAndAddress
-// );
-
+// /:height can also be /latest
+router.get(
+  "/:height/:type/:address",
+  controller.getUserAtHeight
+);
 
 
 export = router;

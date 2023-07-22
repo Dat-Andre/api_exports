@@ -57,8 +57,8 @@ const getSortedHeightsList = (compressedRootPath: string): number[] => {
 };
 
 
-const decompressFile = (compressedRootPath: string, compressed_ext: string, height: string, decompressedRootPath: string): boolean => {
-    const file = path.join(compressedRootPath, height + compressed_ext);    
+const decompressFile = (compressedRootPath: string, compressed_ext: string, height: string, decompressedRootPath: string): boolean => {    
+    const file = path.join(compressedRootPath, height + compressed_ext);
 
     if (isFileDecompressed(decompressedRootPath, height)) {
         return true;
@@ -75,9 +75,30 @@ const decompressFile = (compressedRootPath: string, compressed_ext: string, heig
     }
 };
 
+// getData function at a specific height. Returns JSON or error.
+const getDataJSONAtHeight = (height: string, type: string, decompressedRootPath: string): any => {    
+    const filePath = path.join(decompressedRootPath, height, `${height}_${type}.json`);
+    
+    if (!Object.values(Type).includes(type as Type)) {
+        return {
+            error: "Type does not exist.",
+        };
+    }
+    
+    if (fs.existsSync(filePath)) {
+        const data = fs.readFileSync(filePath, 'utf8');        
+        return JSON.parse(data);;
+    } 
+    
+    return {
+        error: "File does not exist.",
+    };
+}
+
 export {
     getSortedHeightsList,
     getFileNameByType,
     isFileDecompressed,    
     decompressFile,
+    getDataJSONAtHeight,
 };
