@@ -29,15 +29,6 @@ const isFileDecompressed = (decompressedRootPath: string, height: string): boole
     const decompressedPath = path.join(decompressedRootPath, height);
     return fs.existsSync(decompressedPath);
 };
-
-// TODO: same for this, if it snot there we can just error.
-const isHeightAvailable = (compressedRootPath: string, height: string): boolean => {
-    const height_list: number[] = getSortedHeightsList(compressedRootPath);
-    const height_int = Number(height);
-    const height_available = height_list.includes(height_int);
-  
-    return height_available;
-  };
   
 const getSortedHeightsList = (compressedRootPath: string): number[] => {
     const height_list: number[] = [];

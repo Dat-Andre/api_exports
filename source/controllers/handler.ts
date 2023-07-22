@@ -46,8 +46,7 @@ const getDataAtHeight = (
     if (height === "latest") {
         height = getSortedHeightsList(compressedRootPath)[0].toString();
     }
-
-    // decompresses file if it is not already
+    
     decompressFile(compressedRootPath, COMPRESSED_EXTENSION, height, decompressedRootPath);
 
     // ex: bank, auth, staking. TODO: Validate func instead of doing in getDataJSONAtHeight
@@ -72,8 +71,7 @@ const getUserAtHeight = (
     req: Request,
     res: Response,
     next: NextFunction
-): Response => {
-    // get a height, type, and address.
+): Response => {    
     let height = req.params.height.toString();
     if (height === "latest") {
         height = getSortedHeightsList(compressedRootPath)[0].toString();
@@ -82,7 +80,6 @@ const getUserAtHeight = (
     const type = req.params.type;
     const address = req.params.address;
 
-    // decompresses file if it is not already
     // TODO: Move this to getDataJSONAtheight instead?
     decompressFile(compressedRootPath, COMPRESSED_EXTENSION, height, decompressedRootPath);
 

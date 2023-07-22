@@ -1,6 +1,5 @@
 import express from "express";
-// import controller from "../controllers/data_handler";
-import controller from "../controllers/new";
+import controller from "../controllers/handler";
 const router = express.Router();
 
 router.get(
