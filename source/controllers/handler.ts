@@ -97,11 +97,45 @@ const getUserAtHeight = (
             error: "Wallet data not found.",
         });
     }
-
-    // TODO: Add height
+    
     return res.status(200).json({
         height: height,
         request: type,
+        instances,
+    });
+}
+
+const getDelegationsTo = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Response => {    
+    let height = req.params.height.toString();
+    if (height === "latest") {
+        height = getSortedHeightsList(compressedRootPath)[0].toString();
+    }
+
+    const type = "staking";
+    const valoper_address = req.params.valoper_address;
+
+    decompressFile(compressedRootPath, COMPRESSED_EXTENSION, height, decompressedRootPath);
+    
+    const data = getDataJSONAtHeight(height, type, decompressedRootPath);    
+
+    const parentKey: string = typeToKeys[type][0];    
+    
+    const instances = data[parentKey].filter((obj: any) => obj.validator_address === valoper_address);
+
+    if (instances === undefined) {
+        return res.status(400).json({
+            error: "Valoper address not found",
+        });
+    }
+    
+    return res.status(200).json({
+        height: height,
+        request: "delegations",
+        amount: instances.length,
         instances,
     });
 }
@@ -129,4 +163,5 @@ export default {
     decompressTest,
     getDataAtHeight,
     getUserAtHeight,
+    getDelegationsTo,
   };

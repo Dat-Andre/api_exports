@@ -11,6 +11,12 @@ router.get(
   controller.latestHeight
 );
 
+
+router.get(
+  "/:height/delegations/:valoper_address",
+  controller.getDelegationsTo
+);
+
 // TODO: Testing function.
 router.get(
   "/decompress/:height",
