@@ -5,7 +5,8 @@
   "main": "source/server.ts",
   "scripts": {
     "dev": "nodemon -r dotenv/config source/server.ts",
-    "build": "rm -rf build/ && prettier --write source/ && tsc"
+    "build": "rm -rf build/ && prettier --write source/ && tsc",
+    "fmt": "prettier --write source/ && tsc"
   },
   "keywords": [],
   "author": "",

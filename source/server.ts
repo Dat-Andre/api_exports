@@ -19,7 +19,7 @@ router.use((req, res, next) => {
   // set the CORS headers
   res.header(
     "Access-Control-Allow-Headers",
-    "origin, X-Requested-With,Content-Type,Accept, Authorization"
+    "origin, X-Requested-With,Content-Type,Accept, Authorization",
   );
   // set the CORS method headers
   if (req.method === "OPTIONS") {
@@ -34,25 +34,25 @@ router.use((req, res, next) => {
 router.use("/", routes);
 
 router.use((req, res, next) => {
-    const urlStart = `${req.protocol}://${req.get('host')}`
-    
-    res.status(200).json({
-      routes: {
-        "All Heights": `${urlStart}/heights`,
-        "Valid Types": `${urlStart}/types`,
-      },
-      general: {
-        "Account Info": `${urlStart}/:height/auth`,
-        "All Stakers": `${urlStart}/:height/staking`,
-        "Balances": `${urlStart}/:height/bank`,
-        "Supply": `${urlStart}/:height/supply`,
-      },
-      specific: {
-        "Validators Shares": `${urlStart}/:height/validators`,
-        "Specific Delegations": `${urlStart}/:height/delegations/:valoper_address`,
-        "User Specific": `${urlStart}/:height/:type/:address`,
-      }
-    });
+  const urlStart = `${req.protocol}://${req.get("host")}`;
+
+  res.status(200).json({
+    routes: {
+      "All Heights": `${urlStart}/heights`,
+      "Valid Types": `${urlStart}/types`,
+    },
+    general: {
+      "Account Info": `${urlStart}/:height/auth`,
+      "All Stakers": `${urlStart}/:height/staking`,
+      Balances: `${urlStart}/:height/bank`,
+      Supply: `${urlStart}/:height/supply`,
+    },
+    specific: {
+      "Validators Shares": `${urlStart}/:height/validators`,
+      "Specific Delegations": `${urlStart}/:height/delegations/:valoper_address`,
+      "User Specific": `${urlStart}/:height/:type/:address`,
+    },
+  });
 });
 
 /** Server */
