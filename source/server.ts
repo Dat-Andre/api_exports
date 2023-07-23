@@ -30,19 +30,25 @@ router.use((req, res, next) => {
 });
 
 /** Routes */
+
 router.use("/", routes);
 
-/** Error handling */
 router.use((req, res, next) => {
-  const error = new Error("not found");
-  return res.status(404).json({
-    message: error.message,
-  });
+    const urlStart = `${req.protocol}://${req.get('host')}`
+    
+    res.status(200).json({
+      routes: {
+        "avaliable heights": `${urlStart}/heights`,
+        "entire_output": `${urlStart}/:height/:type`,
+        "delegations": `${urlStart}/:height/delegations/:valoper_address`,
+        "user": `${urlStart}/:height/:type/:address`,
+      },
+    });
 });
 
 /** Server */
-const httpServer = http.createServer(router);
 const PORT: any = process.env.PORT ?? 6060;
-httpServer.listen(PORT, () =>
-  console.log(`The server is running on port ${PORT}`)
-);
+
+router.listen(PORT, () => {
+  console.log(`The server is running on port ${6060}`);
+});

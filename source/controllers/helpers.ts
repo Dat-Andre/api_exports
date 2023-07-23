@@ -8,6 +8,14 @@ export enum Type {
     STAKING = "staking",
 }
 
+// pairs the type -> the main key and object key in the data to filter by.
+// typename -> [parentKey, searchKey]
+export const TypeToKeyPairs: any = {
+    "bank": ["balances", "address"],
+    "staking": ["delegations", "delegator_address"],    
+    "auth": ["accounts", "address"],    
+}
+
 export enum FileByType {
     AUTH = "_auth.json",
     BANK = "_bank.json",
@@ -47,6 +55,23 @@ const getSortedHeightsList = (compressedRootPath: string): number[] => {
     return sorted_height_list;
 };
 
+const validateHeight = (compressedRootPath: string, height: string): string | undefined => {
+    if (height === ":height") {
+        return undefined;
+    }
+
+    const heights: number[] = getSortedHeightsList(compressedRootPath);
+        
+    if (height === "l" || height === "latest") {
+        return heights[0].toString();
+    }
+
+    if (isNaN(Number(height))) {        
+        return heights[0].toString();
+    }        
+
+    return height;
+}
 
 const decompressFile = (compressedRootPath: string, compressed_ext: string, height: string, decompressedRootPath: string): boolean => {    
     const file = path.join(compressedRootPath, height + compressed_ext);
@@ -66,13 +91,12 @@ const decompressFile = (compressedRootPath: string, compressed_ext: string, heig
     }
 };
 
-// getData function at a specific height. Returns JSON or error.
 const getDataJSONAtHeight = (height: string, type: string, decompressedRootPath: string): any => {    
     const filePath = path.join(decompressedRootPath, height, `${height}_${type}.json`);
     
     if (!Object.values(Type).includes(type as Type)) {
         return {
-            error: "Type does not exist.",
+            error: "Type does not exist. Valid: " + Object.values(Type).join(", ")
         };
     }
     
@@ -82,7 +106,7 @@ const getDataJSONAtHeight = (height: string, type: string, decompressedRootPath:
     } 
     
     return {
-        error: "File does not exist.",
+        error: `Height: ${height} does not exist. (Use /heights to see avaliable heights)`,
     };
 }
 
@@ -91,5 +115,6 @@ export {
     getFileNameByType,
     isFileDecompressed,    
     decompressFile,
+    validateHeight,
     getDataJSONAtHeight,
 };

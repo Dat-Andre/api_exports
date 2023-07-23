@@ -3,24 +3,13 @@ import controller from "../controllers/handler";
 const router = express.Router();
 
 router.get(
-  "/all",
+  "/heights",
   controller.avaliableHeights
 );
-router.get(
-  "/latest",
-  controller.latestHeight
-);
-
 
 router.get(
   "/:height/delegations/:valoper_address",
   controller.getDelegationsTo
-);
-
-// TODO: Testing function.
-router.get(
-  "/decompress/:height",
-  controller.decompressTest
 );
 
 // /:height can also be /latest
