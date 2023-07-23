@@ -58,5 +58,5 @@ router.use((req, res, next) => {
 const PORT: any = process.env.PORT ?? 6060;
 
 router.listen(PORT, () => {
-  console.log(`The server is running on port ${6060}`);
+  console.log(`The server is running on port ${PORT}`);
 });
