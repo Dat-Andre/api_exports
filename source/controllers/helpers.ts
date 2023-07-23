@@ -7,6 +7,7 @@ export enum Type {
     BANK = "bank",
     SUPPLY = "supply", // bank
     STAKING = "staking",
+    VALIDATORS = "validators", // staking
 }
 
 // pairs the type -> the main key and object key in the data to filter by.
@@ -15,6 +16,7 @@ export const TypeToKeyPairs: any = {
     "bank": ["balances", "address"],
     "supply": ["supply", "denom"], // bank sub key
     "staking": ["delegations", "delegator_address"],    
+    "validators": ["delegations", "validator_address"], // staking subset
     "auth": ["accounts", "address"],    
 }
 

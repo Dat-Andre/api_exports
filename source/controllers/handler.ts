@@ -38,7 +38,7 @@ const getDataAtHeight = (
     }
     let type = req.params.type;
 
-    let isSupply: boolean = (type === "supply");
+    let isSupply: boolean = (type === "supply");    
     if (isSupply) {        
         type = "bank";
     }
@@ -137,10 +137,65 @@ const getDelegationsTo = (
     });
 }
 
+const getValidators = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Response => {
+    let height = validateHeight(compressedRootPath, req.params.height.toString());
+    if (!height) {
+        return res.status(400).json({
+            error: "Invalid height",
+        });
+    }
+
+    const type = "staking";    
+
+    decompressFile(compressedRootPath, COMPRESSED_EXTENSION, height, decompressedRootPath);
+    
+    const data = getDataJSONAtHeight(height, type, decompressedRootPath);    
+
+    const parentKey: string = TypeToKeyPairs[type][0];    
+
+        
+    let validator_delegations: any = {};    
+    data[parentKey].forEach((obj: any) => {        
+        if (!validator_delegations[obj.validator_address]) {
+            validator_delegations[obj.validator_address] = 0;
+        }
+        
+        validator_delegations[obj.validator_address] += Number(obj.shares);
+    });
+    
+    validator_delegations = Object.entries(validator_delegations).sort((a: any, b: any) => {
+        return b[1] - a[1];
+    });
+
+    let total_delegated: number = 0;
+    validator_delegations.forEach((obj: any) => {
+        total_delegated += obj[1];
+    });
+
+
+    if (validator_delegations.length === 0) {
+        return res.status(400).json({
+            error: "No validators found",
+        });
+    }
+    
+    return res.status(200).json({
+        height: height,
+        request: "validators",        
+        total_delegated,
+        validator_delegations,
+    });
+}
+
 export default {  
     avaliableTypes,
     avaliableHeights,  
     getDataAtHeight,
     getUserAtHeight,
     getDelegationsTo,
+    getValidators,
   };

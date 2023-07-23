@@ -48,6 +48,7 @@ router.use((req, res, next) => {
         "Supply": `${urlStart}/:height/supply`,
       },
       specific: {
+        "Validators Shares": `${urlStart}/:height/validators`,
         "Specific Delegations": `${urlStart}/:height/delegations/:valoper_address`,
         "User Specific": `${urlStart}/:height/:type/:address`,
       }

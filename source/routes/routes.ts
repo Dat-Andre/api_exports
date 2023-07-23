@@ -11,18 +11,24 @@ router.get(
   controller.avaliableTypes
 );
 
+
+router.get(
+  "/:height/validators",
+  controller.getValidators
+);
+
+// /:height can also be /latest
 router.get(
   "/:height/delegations/:valoper_address",
   controller.getDelegationsTo
 );
 
-// /:height can also be /latest
+
 router.get(
   "/:height/:type",
   controller.getDataAtHeight
 );
 
-// /:height can also be /latest
 router.get(
   "/:height/:type/:address",
   controller.getUserAtHeight
