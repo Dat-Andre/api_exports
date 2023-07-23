@@ -5,21 +5,25 @@ const compressedRootPath = process.env.COMPRESSED_ROOT_PATH ?? "./export_assets_
 const decompressedRootPath = process.env.DECOMPRESSED_ROOT_PATH ?? "./export_assets_uncompressed/";
 const COMPRESSED_EXTENSION = ".tar.xz";
 
-
-
 const avaliableHeights = (
     req: Request,
     res: Response,
     next: NextFunction
-): Response => {
-    const heights: number[] = getSortedHeightsList(compressedRootPath);
-
+): Response => {    
     return res.status(200).json({
-        heights,
+        heights: getSortedHeightsList(compressedRootPath),
     });
 }
 
-
+const avaliableTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Response => {    
+    return res.status(200).json({
+        types: Object.keys(TypeToKeyPairs),
+    });
+}
 
 const getDataAtHeight = (
     req: Request,
@@ -32,7 +36,12 @@ const getDataAtHeight = (
             error: "Invalid height",
         });
     }
-    const type = req.params.type;
+    let type = req.params.type;
+
+    let isSupply: boolean = (type === "supply");
+    if (isSupply) {        
+        type = "bank";
+    }
     
     decompressFile(compressedRootPath, COMPRESSED_EXTENSION, height, decompressedRootPath);
 
@@ -40,6 +49,14 @@ const getDataAtHeight = (
     if (data.error) {
         return res.status(400).json({
             error: data.error,
+        });
+    }
+
+    if(isSupply) {
+        return res.status(200).json({
+            height: height,
+            request: "supply",
+            supply: data.supply,
         });
     }
     
@@ -121,6 +138,7 @@ const getDelegationsTo = (
 }
 
 export default {  
+    avaliableTypes,
     avaliableHeights,  
     getDataAtHeight,
     getUserAtHeight,

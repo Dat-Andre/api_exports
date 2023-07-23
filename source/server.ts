@@ -38,11 +38,19 @@ router.use((req, res, next) => {
     
     res.status(200).json({
       routes: {
-        "avaliable heights": `${urlStart}/heights`,
-        "entire_output": `${urlStart}/:height/:type`,
-        "delegations": `${urlStart}/:height/delegations/:valoper_address`,
-        "user": `${urlStart}/:height/:type/:address`,
+        "All Heights": `${urlStart}/heights`,
+        "Valid Types": `${urlStart}/types`,
       },
+      general: {
+        "Account Info": `${urlStart}/:height/auth`,
+        "All Stakers": `${urlStart}/:height/staking`,
+        "Balances": `${urlStart}/:height/bank`,
+        "Supply": `${urlStart}/:height/supply`,
+      },
+      specific: {
+        "Specific Delegations": `${urlStart}/:height/delegations/:valoper_address`,
+        "User Specific": `${urlStart}/:height/:type/:address`,
+      }
     });
 });
 

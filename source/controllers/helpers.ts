@@ -5,6 +5,7 @@ import { execSync } from "child_process";
 export enum Type {
     AUTH = "auth",
     BANK = "bank",
+    SUPPLY = "supply", // bank
     STAKING = "staking",
 }
 
@@ -12,6 +13,7 @@ export enum Type {
 // typename -> [parentKey, searchKey]
 export const TypeToKeyPairs: any = {
     "bank": ["balances", "address"],
+    "supply": ["supply", "denom"], // bank sub key
     "staking": ["delegations", "delegator_address"],    
     "auth": ["accounts", "address"],    
 }

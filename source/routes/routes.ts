@@ -6,6 +6,10 @@ router.get(
   "/heights",
   controller.avaliableHeights
 );
+router.get(
+  "/types",
+  controller.avaliableTypes
+);
 
 router.get(
   "/:height/delegations/:valoper_address",
