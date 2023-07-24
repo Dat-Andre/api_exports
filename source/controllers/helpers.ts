@@ -36,9 +36,10 @@ const getFileNameByType = (type: Type): string | undefined => {
   }
 };
 
+// TODO: .
 const isFileDecompressed = (
   decompressedRootPath: string,
-  height: string,
+  height: string, 
 ): boolean => {
   const decompressedPath = path.join(decompressedRootPath, height);
   return fs.existsSync(decompressedPath);
@@ -71,11 +72,14 @@ const validateHeight = (
 
   const heights: number[] = getSortedHeightsList(compressedRootPath);
 
+  // Stars with:
   if (height === "l" || height === "latest") {
     return heights[0].toString();
   }
 
-  if (isNaN(Number(height))) {
+  // earliest value
+
+  if (isNaN(Number(height))) {    
     return heights[0].toString();
   }
 
@@ -90,6 +94,7 @@ const decompressFile = (
 ): boolean => {
   const file = path.join(compressedRootPath, height + compressed_ext);
 
+  // cache
   if (isFileDecompressed(decompressedRootPath, height)) {
     return true;
   }
@@ -109,7 +114,7 @@ const getDataJSONAtHeight = (
   height: string,
   type: string,
   decompressedRootPath: string,
-): any => {
+): any => {  
   const filePath = path.join(
     decompressedRootPath,
     height,

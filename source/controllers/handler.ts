@@ -135,6 +135,7 @@ const getUserAtHeight = (
   const instances = data[parentKey].filter(
     (obj: any) => obj[findKey] === address,
   );
+
   if (instances === undefined) {
     return res.status(400).json({
       error: "Wallet data not found.",
@@ -148,6 +149,7 @@ const getUserAtHeight = (
   });
 };
 
+// TODO: Merge into above function
 const getDelegationsTo = (
   req: Request,
   res: Response,
