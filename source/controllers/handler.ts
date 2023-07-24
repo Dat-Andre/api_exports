@@ -33,6 +33,33 @@ const avaliableTypes = (
   });
 };
 
+const download = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Response => {
+  let height = validateHeight(compressedRootPath, req.params.height.toString());
+  if (!height) {
+    return res.status(400).json({
+      error: "Invalid height",
+    });
+  }
+  
+  const fileToDownload = `${compressedRootPath}${height}${COMPRESSED_EXTENSION}`;
+  const customFilename = `${height}${COMPRESSED_EXTENSION}`;  
+
+  const options = {
+    headers : {
+      'Content-Type': 'application/x-tar',
+    }      
+  }
+
+
+  res.download(fileToDownload, customFilename, options);
+
+  return res.status(200)
+};
+
 const getDataAtHeight = (
   req: Request,
   res: Response,
@@ -230,4 +257,5 @@ export default {
   getUserAtHeight,
   getDelegationsTo,
   getValidators,
+  download,
 };

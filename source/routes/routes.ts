@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.get("/heights", controller.avaliableHeights);
 router.get("/types", controller.avaliableTypes);
+router.get("/download/:height", controller.download);
 
 router.get("/:height/validators", controller.getValidators);
 

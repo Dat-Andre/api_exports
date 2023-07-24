@@ -40,6 +40,7 @@ router.use((req, res, next) => {
     routes: {
       "All Heights": `${urlStart}/heights`,
       "Valid Types": `${urlStart}/types`,
+      "Download Archive": `${urlStart}/download/:height`,
     },
     general: {
       "Account Info": `${urlStart}/:height/auth`,
