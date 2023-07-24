@@ -38,20 +38,20 @@ router.use((req, res, next) => {
 
   res.status(200).json({
     routes: {
-      "All Heights": `${urlStart}/heights`,
-      "Valid Types": `${urlStart}/types`,
-      "Download Archive": `${urlStart}/download/:height`,
+      "All Heights": `/heights`,
+      "Valid Types": `/types`,
+      "Download Archive": `/download/:height`,
     },
     general: {
-      "Account Info": `${urlStart}/:height/auth`,
-      "All Stakers": `${urlStart}/:height/staking`,
-      Balances: `${urlStart}/:height/bank`,
-      Supply: `${urlStart}/:height/supply`,
+      "Account Info": `/:height/auth`,
+      "All Stakers": `/:height/staking`,
+      Balances: `/:height/bank`,
+      Supply: `/:height/supply`,
     },
     specific: {
-      "Validators Shares": `${urlStart}/:height/validators`,
-      "Specific Delegations": `${urlStart}/:height/delegations/:valoper_address`,
-      "User Specific": `${urlStart}/:height/:type/:address`,
+      "Validators Shares": `/:height/validators`,
+      "Specific Delegations": `/:height/delegations/:valoper_address`,
+      "User Specific": `/:height/:type/:address`,
     },
   });
 });
